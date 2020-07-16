@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+
+  master:
+    container_name: mysql_master
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./master/conf/my.cnf:/etc/mysql/my.cnf
+    tty: true
+    environment:
+      TZ: 'Asia/Tokyo'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'master'
+    networks:
+      - semi-database-network
+
+  slave:
+    container_name: mysql_slave
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./slave/conf/my.cnf:/etc/mysql/my.cnf
+    tty: true
+    environment:
+      TZ: 'Asia/Tokyo'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'slave'
+    networks:
+      - semi-database-network
+
+networks:
+  semi-database-network:
+    driver: bridge
