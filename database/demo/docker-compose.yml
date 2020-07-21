@@ -8,7 +8,8 @@ services:
       context: .
       dockerfile: ./Dockerfile
     volumes:
-      - ./master/conf/my.cnf:/etc/mysql/my.cnf
+      - ./master/conf/:/etc/mysql/conf.d/
+      - ./master/log/:/var/log/mysql/
     tty: true
     environment:
       TZ: 'Asia/Tokyo'
@@ -24,7 +25,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
     volumes:
-      - ./slave/conf/my.cnf:/etc/mysql/my.cnf
+      - ./slave/conf/:/etc/mysql/conf.d/
     tty: true
     environment:
       TZ: 'Asia/Tokyo'
