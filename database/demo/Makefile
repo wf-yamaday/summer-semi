@@ -1,5 +1,7 @@
 # セットアップ
 setup:
+	cp ./master/conf/my.cnf.sample ./master/conf/my.cnf
+	cp ./slave/conf/my.cnf.sample ./slave/conf/my.cnf
 	docker-compose build
 
 # 起動
@@ -9,6 +11,11 @@ up:
 # 停止
 down:
 	docker-compose down
+
+# 再起動
+restart:
+	make down
+	make up
 
 # 状態確認
 ps:

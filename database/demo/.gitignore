@@ -67,4 +67,5 @@ $RECYCLE.BIN/
 *.code-workspace
 
 **/log/**
+!.keep
 my.cnf
