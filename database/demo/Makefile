@@ -36,4 +36,4 @@ add-server-id:
 
 # bank_dbの作成とデータ投入
 db.bank:
-	docker container exec -it mysql_master ./db/create-bank-db.sh
+	docker container exec -it mysql_master /bin/sh ./db/create-bank-db.sh
