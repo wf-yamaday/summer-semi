@@ -10,6 +10,7 @@ services:
     volumes:
       - ./master/conf/:/etc/mysql/conf.d/
       - ./master/log/:/var/log/mysql/
+      - ./master/db:/db
     tty: true
     environment:
       TZ: 'Asia/Tokyo'
