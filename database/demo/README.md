@@ -34,3 +34,48 @@
 
 ```
 
+## Transaction
+
+```bash
+# start mysql server
+make up
+
+# check mysql server status
+make ps
+
+# init database
+make db.bank
+
+# login mysql server
+make master.login
+```
+
+### ROLLBACK
+
+```mysql
+USE bank_db;
+
+SELECT * FROM accounts;
+
+START TRANSACTION;
+UPDATE accounts SET money=money-1000 WHERE id=1;
+ROLLBACK;
+
+SELECT * FROM accounts;
+```
+
+### COMMIT
+
+```mysql
+USE bank_db;
+
+SELECT * FROM accounts;
+
+START TRANSACTION;
+UPDATE accounts SET money=money-1000 WHERE id=1;
+UPDATE accounts SET money=money+1000 WHERE id=2;
+COMMIT;
+
+SELECT * FROM accounts;
+```
+
