@@ -33,6 +33,7 @@ slave.login:
 # server-idの付与
 add-server-id:
 	docker container exec -it mysql_master add-server-id.sh
+	docker container exec -it mysql_slave add-server-id.sh
 
 # bank_dbの作成とデータ投入
 db.bank:
