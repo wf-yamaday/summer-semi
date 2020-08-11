@@ -2,7 +2,7 @@
 setup:
 	cp ./master/conf/my.cnf.sample ./master/conf/my.cnf
 	cp ./slave/conf/my.cnf.sample ./slave/conf/my.cnf
-	chmod +x ./master/db/create-bank.db.sh
+	chmod +x ./master/db/create-bank-db.sh
 	docker-compose build
 
 # 起動
@@ -29,6 +29,14 @@ master.login:
 # slaveへ接続(docker-exec)
 slave.login:
 	docker container exec -it mysql_slave mysql -u root -p
+
+# slaveのIPアドレスを取得
+slave.ip:
+	docker container exec -it mysql_slave hostname -i
+
+# masterのIPアドレスを取得
+master.ip:
+	docker container exec -it mysql_master hostname -i
 
 # server-idの付与
 add-server-id:
