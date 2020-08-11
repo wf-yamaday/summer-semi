@@ -10,6 +10,7 @@ services:
     volumes:
       - ./master/conf/:/etc/mysql/conf.d/
       - ./master/log/:/var/log/mysql/
+      - ./master/data:/var/lib/mysql
       - ./master/db:/db
     tty: true
     environment:
@@ -27,6 +28,7 @@ services:
       dockerfile: ./Dockerfile
     volumes:
       - ./slave/conf/:/etc/mysql/conf.d/
+      - ./slave/data:/var/lib/mysql
     tty: true
     environment:
       TZ: 'Asia/Tokyo'

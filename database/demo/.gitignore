@@ -69,3 +69,5 @@ $RECYCLE.BIN/
 **/log/**
 !.keep
 my.cnf
+
+**/data/**
