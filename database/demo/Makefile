@@ -42,7 +42,21 @@ master.ip:
 add-server-id:
 	docker container exec -it mysql_master add-server-id.sh
 	docker container exec -it mysql_slave add-server-id.sh
+	make restart
 
 # bank_dbの作成とデータ投入
 db.bank:
 	docker container exec -it mysql_master /bin/sh ./db/create-bank-db.sh
+
+# データを初期状態に戻す
+clean:
+	-@rm -r ./master/data/**
+	-@rm -r ./slave/data/**
+	-@rm -r ./master/log/**
+	-@rm -r ./slave/log/**
+	-@rm -r ./master/conf/my.cnf
+	-@rm -r ./slave/conf/my.cnf
+	-@touch ./master/data/.keep
+	-@touch ./slave/data/.keep
+	-@touch ./master/log/.keep
+	-@touch ./slave/log/.keep
