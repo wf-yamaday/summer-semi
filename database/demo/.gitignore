@@ -66,8 +66,7 @@ $RECYCLE.BIN/
 !.vscode/extensions.json
 *.code-workspace
 
+**/data/**
 **/log/**
 !.keep
 my.cnf
-
-**/data/**
