@@ -28,6 +28,7 @@ services:
       dockerfile: ./Dockerfile
     volumes:
       - ./slave/conf/:/etc/mysql/conf.d/
+      - ./slave/log/:/var/log/mysql/
       - ./slave/data:/var/lib/mysql
     tty: true
     environment:
