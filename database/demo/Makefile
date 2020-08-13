@@ -48,6 +48,11 @@ add-server-id:
 db.bank:
 	docker container exec -it mysql_master /bin/sh ./db/create-bank-db.sh
 
+# レプリケーションの開始
+repl:
+	@make add-server-id
+	docker container exec -it mysql_master /bin/sh ./db/create-repl-user.sh
+
 # データを初期状態に戻す
 clean:
 	-@rm -r ./master/data/**
