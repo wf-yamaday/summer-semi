@@ -12,6 +12,7 @@ services:
       - ./master/log/:/var/log/mysql/
       - ./master/data:/var/lib/mysql
       - ./master/db:/db
+      - ./master/script:/script
     tty: true
     environment:
       TZ: 'Asia/Tokyo'
