@@ -65,3 +65,5 @@ clean:
 	-@touch ./slave/data/.keep
 	-@touch ./master/log/.keep
 	-@touch ./slave/log/.keep
+	-@cp ./master/conf/my.cnf.sample ./master/conf/my.cnf
+	-@cp ./slave/conf/my.cnf.sample ./slave/conf/my.cnf

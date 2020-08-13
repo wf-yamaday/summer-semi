@@ -29,7 +29,7 @@ collation-server = utf8mb4_general_ci
 
 # START
 # binary-log
-# log-bin = /var/log/mysql/mysql-bin.log
+# log_bin = /var/log/mysql/mysql-bin
 # server-id
 # server_id = SERVER_ID
 # END
