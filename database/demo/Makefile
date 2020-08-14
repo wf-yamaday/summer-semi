@@ -3,6 +3,7 @@ setup:
 	cp ./master/conf/my.cnf.sample ./master/conf/my.cnf
 	cp ./slave/conf/my.cnf.sample ./slave/conf/my.cnf
 	chmod +x ./master/db/create-bank-db.sh
+	chmod +x ./master/db/create-user-db.sh
 	docker-compose build
 
 # 起動
@@ -47,6 +48,10 @@ add-server-id:
 # bank_dbの作成とデータ投入
 db.bank:
 	docker container exec -it mysql_master /bin/sh ./db/create-bank-db.sh
+
+# user_dbの作成とデータ投入
+db.user:
+	docker container exec -it mysql_master /bin/sh ./db/create-user-db.sh
 
 # レプリケーションの開始
 repl:
