@@ -4,36 +4,6 @@
 - docker
 - docker-compose
 
-- `/etc/mysql/conf`の初期状態
-
-```conf
-# Copyright (c) 2016, Oracle and/or its affiliates. All rights reserved.
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License, version 2.0,
-# as published by the Free Software Foundation.
-#
-# This program is also distributed with certain software (including
-# but not limited to OpenSSL) that is licensed under separate terms,
-# as designated in a particular file or component or in included license
-# documentation.  The authors of MySQL hereby grant you an additional
-# permission to link the program and your derivative works with the
-# separately licensed software that they have included with MySQL.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License, version 2.0, for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
-
-!includedir /etc/mysql/conf.d/
-!includedir /etc/mysql/mysql.conf.d/
-
-```
-
 ## Transaction
 
 ```bash
@@ -52,7 +22,7 @@ make master.login
 
 ### ROLLBACK
 
-```mysql
+```sql
 USE bank_db;
 
 SELECT * FROM accounts;
@@ -66,7 +36,7 @@ SELECT * FROM accounts;
 
 ### COMMIT
 
-```mysql
+```sql
 USE bank_db;
 
 SELECT * FROM accounts;
@@ -79,3 +49,96 @@ COMMIT;
 SELECT * FROM accounts;
 ```
 
+## レプリケーション
+
+### server-idの付与
+
+```sh
+make add-server-id
+```
+
+### Master側のレプリケーションの設定
+
+#### レプリケーション用のユーザを作成
+
+```sql
+CREATE USER 'repl'@'192.0.%.%' IDENTIFIED BY 'repl';
+GRANT REPLICATION SLAVE ON *.* TO 'repl'@'192.0.%.%';
+```
+
+#### Masterのbinlogのポジションを取得
+
+```sql
+SHOW MASTER STATUS;
+```
+
+#### Slave側のレプリケーションの設定
+
+```sql
+CHANGE MASTER TO
+  MASTER_HOST='mysql_master',
+  MASTER_PORT=3306,
+  MASTER_LOG_FILE='mysql-bin.000004',
+  MASTER_LOG_POS=1806;
+```
+
+```sql
+START SLAVE USER = 'repl' PASSWORD = 'repl';
+```
+
+
+```sql
+select user, host from mysql.user where user='repl'\G;
+```
+
+```sql
+SHOW SLAVE STATUS\G;
+```
+
+## EXPLAINとindex
+
+```sql
+USE user_db;
+SELECT * FROM users WHERE email = 'jjanodetro@vinaora.com';
+```
+
+### EXPLAIN
+
+```sql
+EXPLAIN SELECT * FROM users WHERE email = 'jjanodetro@vinaora.com';
+```
+
+```
+(master) [user_db] > EXPLAIN SELECT * FROM users WHERE email = 'jjanodetro@vinaora.com';
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra       |
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------------+
+|  1 | SIMPLE      | users | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 1000 |    10.00 | Using where |
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------------+
+```
+
+```sql
+ALTER TABLE users ADD INDEX email_idx(email);
+```
+
+```
+(master) [user_db] > EXPLAIN SELECT * FROM users WHERE email = 'jjanodetro@vinaora.com';
++----+-------------+-------+------------+------+---------------+------+---------+-------+------+----------+-------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref   | rows | filtered | Extra |
++----+-------------+-------+------------+------+---------------+------+---------+-------+------+----------+-------+
+|  1 | SIMPLE      | users | NULL       | ref  | idx           | idx  | 203     | const |    1 |   100.00 | NULL  |
++----+-------------+-------+------------+------+---------------+------+---------+-------+------+----------+-------+
+```
+
+```sql
+ALTER TABLE users ADD UNIQUE(email);
+```
+
+```
+(master) [user_db] > EXPLAIN SELECT * FROM users WHERE email = 'jjanodetro@vinaora.com';
++----+-------------+-------+------------+-------+---------------+-------+---------+-------+------+----------+-------+
+| id | select_type | table | partitions | type  | possible_keys | key   | key_len | ref   | rows | filtered | Extra |
++----+-------------+-------+------------+-------+---------------+-------+---------+-------+------+----------+-------+
+|  1 | SIMPLE      | users | NULL       | const | email,idx     | email | 203     | const |    1 |   100.00 | NULL  |
++----+-------------+-------+------------+-------+---------------+-------+---------+-------+------+----------+-------+
+```
