@@ -142,3 +142,20 @@ ALTER TABLE users ADD UNIQUE(email);
 |  1 | SIMPLE      | users | NULL       | const | email,idx     | email | 203     | const |    1 |   100.00 | NULL  |
 +----+-------------+-------+------------+-------+---------------+-------+---------+-------+------+----------+-------+
 ```
+
+## 全文検索（Full text search）
+
+```bash
+make db.fulltext
+```
+
+```sql
+SELECT * FROM documents WHERE MATCH (content) AGAINST ('やうやう');
+```
+
+### フルテキストインデックスの確認
+
+```sql
+SET GLOBAL innodb_ft_aux_table = 'fulltext_db/documents';
+SELECT * FROM INFORMATION_SCHEMA.INNODB_FT_INDEX_CACHE;
+```
