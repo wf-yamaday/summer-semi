@@ -6,7 +6,6 @@ IFS='.'
 set -- $IP
 IFS=''
 SOURCE_IP="$1.$2.%.%"
-echo $SOURCE_IP
 
 # create repl user
 echo "CREATE USER 'repl'@'$SOURCE_IP' IDENTIFIED BY 'repl';" | mysql -u root -p"$MYSQL_ROOT_PASSWORD"
