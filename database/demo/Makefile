@@ -4,6 +4,7 @@ setup:
 	cp ./slave/conf/my.cnf.sample ./slave/conf/my.cnf
 	chmod +x ./master/db/create-bank-db.sh
 	chmod +x ./master/db/create-user-db.sh
+	chmod +x ./master/db/create-fulltext-db.sh
 	docker-compose build
 
 # 起動
@@ -53,10 +54,14 @@ db.bank:
 db.user:
 	docker container exec -it mysql_master /bin/sh ./db/create-user-db.sh
 
+# fulltext_dbの作成とデータ投入
+db.fulltext:
+	docker container exec -it mysql_master /bin/sh ./db/create-fulltext-db.sh
+
 # レプリケーションの開始
 repl:
 	@make add-server-id
-	docker container exec -it mysql_master /bin/sh ./db/create-repl-user.sh
+	sleep 2;docker container exec -it mysql_master /bin/sh ./script/start-repl.sh
 
 # データを初期状態に戻す
 clean:
