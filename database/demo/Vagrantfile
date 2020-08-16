@@ -1,0 +1,37 @@
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "ubuntu/xenial64"
+  config.vm.synced_folder "./", "/demo", :mount_options => ['dmode=755', 'fmode=755']
+
+  # config.vm.box_check_update = false
+
+  config.ssh.insert_key = false
+
+  # ゲストOSにはプライベートネットワーク接続とする
+  config.vm.network "private_network", ip: "192.168.33.10"
+
+  # --- VirtualBoxの設定 ---
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--ostype", "Ubuntu_64"]
+    vb.memory = "1024"
+  end
+
+  # シェルでゲストOSの初期設定
+  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+      sudo timedatectl set-timezone Asia/Tokyo
+
+      # kernel update required by https://docs.docker.com/engine/release-notes/#18092
+      sudo apt-get update
+      sudo apt-get -y install --no-install-recommends linux-generic-lts-xenial
+
+      sudo apt-get install -y tzdata
+
+      # .profile内の処理でディレクトリを移動しておく
+      echo 'cd /demo' >> /home/vagrant/.profile
+  SHELL
+
+  # --- dockerの設定。これでゲストOSでdockerコマンドが使える ---
+  config.vm.provision :docker
+
+  config.vm.provision :docker_compose, compose_version: "1.26.0"
+end
