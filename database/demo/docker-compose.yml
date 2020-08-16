@@ -4,6 +4,7 @@ services:
 
   master:
     container_name: mysql_master
+    user: "1000:50"
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -19,11 +20,13 @@ services:
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'master'
+    command: --innodb-use-native-aio=0
     networks:
       - semi-database-network
 
   slave:
     container_name: mysql_slave
+    user: "1000:50"
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -37,6 +40,7 @@ services:
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'slave'
+    command: --innodb-use-native-aio=0
     networks:
       - semi-database-network
 
