@@ -3,6 +3,9 @@ FROM mysql:5.7
 ADD script/add-server-id.sh /usr/local/bin/add-server-id.sh
 RUN chmod +x /usr/local/bin/add-server-id.sh
 
+ADD db /db
+RUN chmod +x /db/*.sh
+
 RUN apt-get update \
     && apt-get install -y locales \
     && locale-gen ja_JP.UTF-8
