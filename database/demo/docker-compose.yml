@@ -20,7 +20,8 @@ services:
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'master'
-    command: --innodb-use-native-aio=0
+    command: >
+      bash -c "chmod 644 /etc/mysql/conf.d/my.cnf && /entrypoint.sh mysqld"
     networks:
       - semi-database-network
 
@@ -40,7 +41,8 @@ services:
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'slave'
-    command: --innodb-use-native-aio=0
+    command: >
+      bash -c "chmod 644 /etc/mysql/conf.d/my.cnf && /entrypoint.sh mysqld"
     networks:
       - semi-database-network
 
