@@ -1,4 +1,4 @@
-﻿DROP TABLE IF EXISTS `documents`;
+DROP TABLE IF EXISTS `documents`;
 
 create table `documents` (
   `id` INT unsigned NOT NULL AUTO_INCREMENT,
