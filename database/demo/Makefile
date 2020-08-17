@@ -29,6 +29,14 @@ master.login:
 slave.login:
 	docker container exec -it mysql_slave mysql -u root -p
 
+# masterのログを確認する
+master.logs:
+	docker-compose logs master
+
+# slaveのログを確認する
+slave.logs:
+	docker-compose logs slave
+
 # slaveのIPアドレスを取得
 slave.ip:
 	docker container exec -it mysql_slave hostname -i
