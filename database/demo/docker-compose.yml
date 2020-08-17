@@ -4,14 +4,13 @@ services:
 
   master:
     container_name: mysql_master
-    user: "1000:50"
     build:
       context: .
       dockerfile: ./Dockerfile
     volumes:
-      - ./master/conf/:/etc/mysql/conf.d/
+      - ./master/conf/:/conf
       - ./master/log/:/var/log/mysql/
-      - ./master/data:/var/lib/mysql
+      - master_db:/var/lib/mysql
       - ./master/db:/db
       - ./master/script:/script
     tty: true
@@ -21,20 +20,22 @@ services:
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'master'
     command: >
-      bash -c "chmod 644 /etc/mysql/conf.d/my.cnf && /entrypoint.sh mysqld"
+      bash -c "
+      cp /conf/my.cnf /etc/mysql/conf.d/ &&
+      chmod 644 /etc/mysql/conf.d/my.cnf &&
+      /entrypoint.sh mysqld"
     networks:
       - semi-database-network
 
   slave:
     container_name: mysql_slave
-    user: "1000:50"
     build:
       context: .
       dockerfile: ./Dockerfile
     volumes:
-      - ./slave/conf/:/etc/mysql/conf.d/
+      - ./slave/conf/:/conf
       - ./slave/log/:/var/log/mysql/
-      - ./slave/data:/var/lib/mysql
+      - slave_db:/var/lib/mysql
     tty: true
     environment:
       TZ: 'Asia/Tokyo'
@@ -42,9 +43,16 @@ services:
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'slave'
     command: >
-      bash -c "chmod 644 /etc/mysql/conf.d/my.cnf && /entrypoint.sh mysqld"
+      bash -c "
+      cp /conf/my.cnf /etc/mysql/conf.d/ &&
+      chmod 644 /etc/mysql/conf.d/my.cnf &&
+      /entrypoint.sh mysqld"
     networks:
       - semi-database-network
+
+volumes:
+  master_db: {}
+  slave_db: {}
 
 networks:
   semi-database-network:

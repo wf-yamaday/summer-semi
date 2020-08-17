@@ -23,6 +23,6 @@ eval $v2
 
 MYSQL_SERVER_ID=`expr $v1 \* 256 + $v2`
 
-sed -i -e "/# START/,/# END/ s/SERVER_ID/$MYSQL_SERVER_ID/g" /etc/mysql/conf.d/my.cnf
-sed -i -e '/# START/,/# END/ s/# server_id/server_id/g' /etc/mysql/conf.d/my.cnf
-sed -i -e '/# START/,/# END/ s/# log_bin/log_bin/g' /etc/mysql/conf.d/my.cnf
+sed -i -e "/# START/,/# END/ s/SERVER_ID/$MYSQL_SERVER_ID/g" /conf/my.cnf
+sed -i -e '/# START/,/# END/ s/# server_id/server_id/g' /conf/my.cnf
+sed -i -e '/# START/,/# END/ s/# log_bin/log_bin/g' /conf/my.cnf

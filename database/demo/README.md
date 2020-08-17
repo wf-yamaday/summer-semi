@@ -1,8 +1,30 @@
 # Guide
 
+## 演習環境
+
+必要なソフトウェアは以下（ただしWindowsでの動作確認が十分にできていないのでVagrantfileを用意した．）
+
 - GNU make
 - docker
 - docker-compose
+
+### Vagrantによる演習環境の構築
+
+### Pluginのインストール
+
+以下のプラグインをインストールしておく．
+
+```bash
+vagrant plugin install vagrant-vbguest
+vagrant plugin install vagrant-docker-compose
+```
+
+### 仮想マシンの起動と接続
+
+```bash
+vagrant up
+vagrant ssh
+```
 
 ## Transaction
 
