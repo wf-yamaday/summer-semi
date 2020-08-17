@@ -1,9 +1,11 @@
 FROM mysql:5.7
 
 ADD script/add-server-id.sh /usr/local/bin/add-server-id.sh
+RUN sed -i 's/\r//' /usr/local/bin/add-server-id.sh
 RUN chmod +x /usr/local/bin/add-server-id.sh
 
 ADD db /db
+RUN sed -i 's/\r//' /db/*.sh
 RUN chmod +x /db/*.sh
 
 RUN apt-get update \
