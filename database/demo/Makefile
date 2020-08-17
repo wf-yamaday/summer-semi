@@ -2,9 +2,6 @@
 setup:
 	cp ./master/conf/my.cnf.sample ./master/conf/my.cnf
 	cp ./slave/conf/my.cnf.sample ./slave/conf/my.cnf
-	chmod +x ./master/db/create-bank-db.sh
-	chmod +x ./master/db/create-user-db.sh
-	chmod +x ./master/db/create-fulltext-db.sh
 	docker-compose build
 
 # 起動
