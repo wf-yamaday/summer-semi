@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 IP=`hostname -i`
 IFS='.'
 set -- $IP

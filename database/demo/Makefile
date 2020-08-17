@@ -66,7 +66,7 @@ db.fulltext:
 # レプリケーションの開始
 repl:
 	@make add-server-id
-	sleep 2;docker container exec -it mysql_master bin/sh ./script/start-repl.sh
+	sleep 2;docker container exec -it mysql_master start-repl.sh
 
 # データを初期状態に戻す
 clean:

@@ -1,8 +1,11 @@
 FROM mysql:5.7
 
 ADD script/add-server-id.sh /usr/local/bin/add-server-id.sh
+ADD script/start-repl.sh /usr/local/bin/start-repl.sh
 RUN sed -i 's/\r//' /usr/local/bin/add-server-id.sh
+RUN sed -i 's/\r//' /usr/local/bin/start-repl.sh
 RUN chmod +x /usr/local/bin/add-server-id.sh
+RUN chmod +x /usr/local/bin/start-repl.sh
 
 ADD db /db
 RUN sed -i 's/\r//' /db/*.sh
