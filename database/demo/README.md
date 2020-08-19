@@ -2,13 +2,18 @@
 
 ## 演習環境
 
-必要なソフトウェアは以下（ただしWindowsでの動作確認が十分にできていないのでVagrantfileを用意した．）
+必要なソフトウェアは以下
+※Windowsでの動作確認が十分にできていないのでVagrantfileを用意した．
 
 - GNU make
 - docker
 - docker-compose
+- Bash
 
-### Vagrantによる演習環境の構築
+### Vagrantによる演習環境の構築（うまくいかない人向け）
+
+<details>
+<summary具体的な処理内容`(クリックで展開)</summary>
 
 ### Pluginのインストール
 
@@ -26,19 +31,56 @@ vagrant up
 vagrant ssh
 ```
 
-## Transaction
+</details>
 
-```bash
-# start mysql server
+## 基本操作
+
+必要な操作はMakefileにタスクとして定義してある．
+masterの部分はslaveに置き換えることでslave側への操作となる．
+
+```sh
+# 初期設定(docker-compose buildなど)
+make setup
+
+# 演習環境の立ち上げ(docker-compse up)
 make up
 
-# check mysql server status
+# 演習環境の状態を確認(docker-compse ps)
 make ps
 
-# init database
+# 演習環境のMySQLサーバへの接続(docker exec)
+make master.login
+
+# MySQLサーバのログを確認(docker-compose logs)
+make master.logs
+
+# 演習環境の停止(docker-compose down)
+make down
+
+# データなどを全て削除して初期状態に戻す(docker-compose down -v)
+make clean
+```
+
+## データ投入
+
+`make db.*`でmasterにデータを投入することができる．
+今回は3種類のデータを用意している．
+
+```sh
 make db.bank
 
-# login mysql server
+make db.user
+
+make db.fulltext
+```
+
+## 演習1：Transaction
+
+```bash
+# データの投入
+make db.bank
+
+# mysqlへログイン
 make master.login
 ```
 
@@ -71,27 +113,24 @@ COMMIT;
 SELECT * FROM accounts;
 ```
 
-## レプリケーション
-
-### server-idの付与
+## 演習2：レプリケーション
 
 ```sh
+# server-idの付与
 make add-server-id
+
+# レプリケーションの設定
+make repl
 ```
 
-### Master側のレプリケーションの設定
+<details>
+<summary具体的な処理内容(クリックで展開)</summary>
 
-#### レプリケーション用のユーザを作成
+#### master側でレプリケーション用のユーザを作成
 
 ```sql
 CREATE USER 'repl'@'192.0.%.%' IDENTIFIED BY 'repl';
 GRANT REPLICATION SLAVE ON *.* TO 'repl'@'192.0.%.%';
-```
-
-#### Masterのbinlogのポジションを取得
-
-```sql
-SHOW MASTER STATUS;
 ```
 
 #### Slave側のレプリケーションの設定
@@ -100,24 +139,45 @@ SHOW MASTER STATUS;
 CHANGE MASTER TO
   MASTER_HOST='mysql_master',
   MASTER_PORT=3306,
-  MASTER_LOG_FILE='mysql-bin.000004',
-  MASTER_LOG_POS=1806;
+  MASTER_LOG_FILE='{masterのbinlogのファイル名}',
+  MASTER_LOG_POS={binlogのポジション};
 ```
 
 ```sql
 START SLAVE USER = 'repl' PASSWORD = 'repl';
 ```
 
+</details>
+
+#### Masterのbinlogのポジションを確認
 
 ```sql
-select user, host from mysql.user where user='repl'\G;
+SHOW MASTER STATUS;
+```
+
+#### レプリケーション用のユーザーの確認
+
+```sql
+SELECT user, host FROM mysql.user WHERE user='repl'\G;
+```
+
+#### slave側でmasterと接続できているかの確認
+
+```sh
+make slave.login
 ```
 
 ```sql
 SHOW SLAVE STATUS\G;
 ```
 
-## EXPLAINとindex
+#### masterにデータを投入しslaveに反映されるかを確認
+
+```
+make db.user
+```
+
+## 演習3：EXPLAINとindex
 
 ```sql
 USE user_db;
@@ -165,9 +225,10 @@ ALTER TABLE users ADD UNIQUE(email);
 +----+-------------+-------+------------+-------+---------------+-------+---------+-------+------+----------+-------+
 ```
 
-## 全文検索（Full text search）
+## 演習4：全文検索（Full text search）
 
 ```bash
+# 全文検索用のデータを投入
 make db.fulltext
 ```
 
