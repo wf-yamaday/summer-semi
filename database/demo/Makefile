@@ -69,14 +69,11 @@ repl:
 
 # データを初期状態に戻す
 clean:
-	-@rm -r ./master/data/**
-	-@rm -r ./slave/data/**
+	-@docker-compose down -v
 	-@rm -r ./master/log/**
 	-@rm -r ./slave/log/**
 	-@rm -r ./master/conf/my.cnf
 	-@rm -r ./slave/conf/my.cnf
-	-@touch ./master/data/.keep
-	-@touch ./slave/data/.keep
 	-@touch ./master/log/.keep
 	-@touch ./slave/log/.keep
 	-@cp ./master/conf/my.cnf.sample ./master/conf/my.cnf
