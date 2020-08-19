@@ -9,7 +9,7 @@ services:
       dockerfile: ./Dockerfile
     volumes:
       - ./master/conf/:/conf
-      - ./master/log/:/var/log/mysql/
+      - master_log/:/var/log/mysql/
       - master_db:/var/lib/mysql
     tty: true
     environment:
@@ -32,7 +32,7 @@ services:
       dockerfile: ./Dockerfile
     volumes:
       - ./slave/conf/:/conf
-      - ./slave/log/:/var/log/mysql/
+      - slave_log/:/var/log/mysql/
       - slave_db:/var/lib/mysql
     tty: true
     environment:
@@ -50,7 +50,9 @@ services:
 
 volumes:
   master_db: {}
+  master_log: {}
   slave_db: {}
+  slave_log: {}
 
 networks:
   semi-database-network:
