@@ -264,13 +264,7 @@ gradle test
 
 問題の概要は「正の整数$n$に対し以下の操作を繰り返すと有限回の操作のうちに必ず1に到達するだろう」というものである．
 
-$$
-f(n)=
-\begin{cases}
-  n/2 & n \equiv 0 \pmod{2} \\
-  3n+1 & n \equiv 1 \pmod{2}
-\end{cases}
-$$
+<img src="https://latex.codecogs.com/gif.latex?\bg_white&space;\LARGE&space;f(n)=&space;\begin{cases}&space;n/2&space;&&space;n&space;\equiv&space;0&space;\pmod{2}&space;\\&space;3n&plus;1&space;&&space;n&space;\equiv&space;1&space;\pmod{2}&space;\end{cases}">
 
 この操作を先ほど作成したGradleプロジェクトの`App.java`にメソッドとして記述し`AppTest.java`でテストを記述することで確かめる．
 
