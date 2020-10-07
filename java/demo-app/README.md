@@ -1,4 +1,4 @@
-# Demo-App
+# DemoApp
 
 > 参考：https://guides.gradle.org/building-java-web-applications/
 
