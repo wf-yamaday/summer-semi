@@ -1,8 +1,7 @@
 # DemoApp
 
-> 参考：https://guides.gradle.org/building-java-web-applications/
 
-*本演習はJava 1.8系で動作するので注意*
+**本演習はJava 1.8系で動作するので注意**
 
 Javaのバージョン切り替えについては以下を参照．
 
@@ -40,9 +39,10 @@ Javaのバージョン切り替えについては以下を参照．
         └── resources
 ```
 
-## Gradleの設定とGradle wrapperの作成
+## 1. build.Gradleの設定とGradle wrapperの作成
 
-`build.gradle`を以下のように編集します．
+はじめに`build.gradle`で依存関係の設定などを行います．
+具体的には`build.gradle`を以下のように編集します．
 
 ```gradle
 plugins {
@@ -59,16 +59,23 @@ dependencies {
 }
 ```
 
-Gradle wrapperを作成します．
+次にGradle wrapperを作成します．
+Gradle wrapperを作成しておくと，Gradleがインストールされていない環境でもスクリプトを利用して動作させることができます．
+以下のコマンドで作成することができます．
 
 ```bash
 gradle wrapper --gradle-version=4.10.3
 ```
 
-### Servletの作成
+コマンド実行後に`gradlew`と`gradlew.bat`の2つが作成されているはずです．
+また`gradle/wrapper`ディレクトリ配下に`gradle-wrapper.jar`と`gradle-wrapper.properties`の2つのファイルが作成されています．
 
+### 2. HelloServlet，index.html，response.jspの作成
+
+#### 2.1 HelloServletの作成
+
+JavaでHTTPリクエストを処理するServletを作成します．
 `demo-app/src/main/java/jp/ac/gakugei/hazelab/demo/HelloServlet.java`を以下のように編集します．
-
 
 ```java
 package jp.ac.gakugei.hazelab.demo;
@@ -98,7 +105,11 @@ public class HelloServlet extends HttpServlet {
 }
 ```
 
-`demo-app/src/main/webapp/index.html`を編集します．
+#### 2.2 index.htmlの作成
+
+次にウェルカムファイルである`index.html`を作成します．
+`index.html`は先ほど作成した`HelloServlet`に対してPOSTリクエストでフォームを送信する画面にします．
+`demo-app/src/main/webapp/index.html`を以下のように編集します．
 
 ```html
 <html>
@@ -117,7 +128,10 @@ public class HelloServlet extends HttpServlet {
 </html>
 ```
 
-`demo-app/src/main/webapp/response.jsp`を編集します．
+#### 2.2 response.jspの作成
+
+`response.jsp`は`HelloServlet`でPOSTリクエストを処理した後に遷移する画面になります．
+`demo-app/src/main/webapp/response.jsp`を以下のように編集します．
 
 ```jsp
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -131,14 +145,14 @@ public class HelloServlet extends HttpServlet {
 </html>
 ```
 
+### 3. Grettyプラグインの追加
 
+Servlet，JSPなどを作成しましたがServletを実行する環境であるWebコンテナ(Servletコンテナ)が無いので，アプリケーションを動作させることができません．
+そこでServletコンテナをGradleで立ち上げるプラグインの一つであるGettyを導入します．
 
-### Grettyプラグインの追加
+> 参考：Gretty, https://github.com/akhikhl/gretty
 
-ServletコンテナをGradleで立ち上げるプラグインの一つ．
-
-https://github.com/akhikhl/gretty
-
+導入は`build.gradle`pluginsに追記するだけです．
 `build.gradle`を以下のように編集します．
 
 ```gradle
@@ -157,13 +171,40 @@ dependencies {
 }
 ```
 
+`build.gradle`を編集後にgradleのタスクを確認すると，Gretty tasks の項目が増えていることが確認できます．
+gradleのtasksの確認は以下のコマンドで行います．
 
-## 単体テスト
+```bash
+./gradlew tasks
+```
+
+### 4. アプリケーションの実行
+
+今回は Gretty tasksの`appRun`を使用してWebコンテナ(Servletコンテナ)を立ち上げます．
+
+```bash
+./gradlew appRun
+```
+
+起動に成功すると，http://localhost:8080/demo-app/ で`index.html`を確認することができます．
+
+`index.html`のフォームから文字列を送信してWebアプリケーションの動作を確認してみましょう．
+
+
+## 5. 単体テスト
 
 単体テストとは，個々のユニットが仕様を満たしているかをテストする手法です．
 Javaのようなオブジェクト指向プログラミングでは，ユニットはメソッドであることが多いです．
 
-`build.gradle`を編集します．
+今回のようなHTTPリクエストを受けて処理をするような外部の要求に依存するメソッドでは単体テストの記述が難しいです．
+そこで **Mock(モック)** を利用して単体テストを記述します．
+
+テストコードでMockを簡単に利用するために，Mockito を導入します．
+
+> Mockito, https://site.mockito.org/
+
+導入は`build.gradle`のdependenciesに追記するだけです．
+`build.gradle`を以下のように編集します．
 
 ```gradle
 plugins {
@@ -183,7 +224,7 @@ dependencies {
 
 ```
 
-`demo-app/src/test/java/jp/ac/gakugei/hazelab/demo/HelloServletTest.java`を編集します．
+次にテストコードの`demo-app/src/test/java/jp/ac/gakugei/hazelab/demo/HelloServletTest.java`を編集します．
 
 ```java
 package jp.ac.gakugei.hazelab.demo;
@@ -249,3 +290,16 @@ public class HelloServletTest {
     }
 }
 ```
+
+記述後にテストを実行してみましょう．
+
+```bash
+./gradlew test
+```
+
+テストの結果はレポートとして`build/reports/tests/test/index.html`に出力されます．
+
+
+## 参考資料
+
+- Building Java Web Applications, https://guides.gradle.org/building-java-web-applications/
