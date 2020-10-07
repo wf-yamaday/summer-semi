@@ -1,5 +1,9 @@
 # DemoApp
 
+## 環境
+
+- java 1.8
+- Gradle 6系
 
 **本演習はJava 1.8系で動作するので注意**
 
@@ -7,6 +11,15 @@ Javaのバージョン切り替えについては以下を参照．
 
 - [Windows向け](https://github.com/HazeyamaLab/setup/issues/1)
 - [macOS向け](https://github.com/HazeyamaLab/setup/issues/6)
+
+`java -version`コマンドで1.8系であることを確認してください．
+
+```bash
+java -version
+openjdk version "1.8.0_265"
+OpenJDK Runtime Environment (AdoptOpenJDK)(build 1.8.0_265-b01)
+OpenJDK 64-Bit Server VM (AdoptOpenJDK)(build 25.265-b01, mixed mode)
+```
 
 ## JavaによるWebアプリケーションの作成
 
@@ -41,7 +54,7 @@ Javaのバージョン切り替えについては以下を参照．
 
 ## 1. build.Gradleの設定とGradle wrapperの作成
 
-はじめに`build.gradle`で依存関係の設定などを行います．
+はじめに`build.gradle`で依存関係の設定などを行います．  
 具体的には`build.gradle`を以下のように編集します．
 
 ```gradle
@@ -59,22 +72,22 @@ dependencies {
 }
 ```
 
-次にGradle wrapperを作成します．
-Gradle wrapperを作成しておくと，Gradleがインストールされていない環境でもスクリプトを利用して動作させることができます．
+次にGradle wrapperを作成します．  
+Gradle wrapperを作成しておくと，Gradleがインストールされていない環境でもスクリプトを利用して動作させることができます．  
 以下のコマンドで作成することができます．
 
 ```bash
 gradle wrapper --gradle-version=4.10.3
 ```
 
-コマンド実行後に`gradlew`と`gradlew.bat`の2つが作成されているはずです．
+コマンド実行後に`gradlew`と`gradlew.bat`の2つが作成されているはずです．  
 また`gradle/wrapper`ディレクトリ配下に`gradle-wrapper.jar`と`gradle-wrapper.properties`の2つのファイルが作成されています．
 
-### 2. HelloServlet，index.html，response.jspの作成
+## 2. HelloServlet，index.html，response.jspの作成
 
-#### 2.1 HelloServletの作成
+### 2.1 HelloServletの作成
 
-JavaでHTTPリクエストを処理するServletを作成します．
+JavaでHTTPリクエストを処理するServletを作成します．  
 `demo-app/src/main/java/jp/ac/gakugei/hazelab/demo/HelloServlet.java`を以下のように編集します．
 
 ```java
@@ -105,10 +118,10 @@ public class HelloServlet extends HttpServlet {
 }
 ```
 
-#### 2.2 index.htmlの作成
+### 2.2 index.htmlの作成
 
-次にウェルカムファイルである`index.html`を作成します．
-`index.html`は先ほど作成した`HelloServlet`に対してPOSTリクエストでフォームを送信する画面にします．
+次にウェルカムファイルである`index.html`を作成します．  
+`index.html`は先ほど作成した`HelloServlet`に対してPOSTリクエストでフォームを送信する画面にします．  
 `demo-app/src/main/webapp/index.html`を以下のように編集します．
 
 ```html
@@ -128,9 +141,9 @@ public class HelloServlet extends HttpServlet {
 </html>
 ```
 
-#### 2.2 response.jspの作成
+### 2.2 response.jspの作成
 
-`response.jsp`は`HelloServlet`でPOSTリクエストを処理した後に遷移する画面になります．
+`response.jsp`は`HelloServlet`でPOSTリクエストを処理した後に遷移する画面になります．  
 `demo-app/src/main/webapp/response.jsp`を以下のように編集します．
 
 ```jsp
@@ -145,14 +158,14 @@ public class HelloServlet extends HttpServlet {
 </html>
 ```
 
-### 3. Grettyプラグインの追加
+## 3. Grettyプラグインの追加
 
-Servlet，JSPなどを作成しましたがServletを実行する環境であるWebコンテナ(Servletコンテナ)が無いので，アプリケーションを動作させることができません．
+Servlet，JSPなどを作成しましたがServletを実行する環境であるWebコンテナ(Servletコンテナ)が無いので，アプリケーションを動作させることができません．  
 そこでServletコンテナをGradleで立ち上げるプラグインの一つであるGettyを導入します．
 
 > 参考：Gretty, https://github.com/akhikhl/gretty
 
-導入は`build.gradle`pluginsに追記するだけです．
+導入は`build.gradle`pluginsに追記するだけです．  
 `build.gradle`を以下のように編集します．
 
 ```gradle
@@ -171,14 +184,14 @@ dependencies {
 }
 ```
 
-`build.gradle`を編集後にgradleのタスクを確認すると，Gretty tasks の項目が増えていることが確認できます．
+`build.gradle`を編集後にgradleのタスクを確認すると，Gretty tasks の項目が増えていることが確認できます．  
 gradleのtasksの確認は以下のコマンドで行います．
 
 ```bash
 ./gradlew tasks
 ```
 
-### 4. アプリケーションの実行
+## 4. アプリケーションの実行
 
 今回は Gretty tasksの`appRun`を使用してWebコンテナ(Servletコンテナ)を立ち上げます．
 
@@ -203,7 +216,7 @@ Javaのようなオブジェクト指向プログラミングでは，ユニッ�
 
 > Mockito, https://site.mockito.org/
 
-導入は`build.gradle`のdependenciesに追記するだけです．
+導入は`build.gradle`のdependenciesに追記するだけです．  
 `build.gradle`を以下のように編集します．
 
 ```gradle
